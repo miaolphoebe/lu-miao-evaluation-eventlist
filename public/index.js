@@ -54,8 +54,8 @@ class EventModel {
   }
 
   getEvent(eventId) {
-    console.log(eventId);
-    return this.#events.filter((event) => event.id === eventId);
+    console.log(this.#events.find((event) => event.id == eventId));
+    return this.#events.find((event) => event.id == eventId);
   }
 
   async fetchEvents() {
@@ -135,14 +135,19 @@ class EventView {
     eventEndInput.setAttribute('value', event.endDate);
 
     const actionEditBtn = document.createElement('button');
-    actionEditBtn.classList.add('event_edit-btn');
+    actionEditBtn.classList.add('event_edit-finalize-btn');
     actionEditBtn.setAttribute('edit-id', this.eventId);
     actionEditBtn.textContent = 'Edit';
 
     eventNameTd.append(eventNameInput);
     eventStartTd.append(eventStartInput);
     eventEndTd.append(eventEndInput);
-    eventActionsTd.append(actionAddBtn, actionDeleteBtn);
+
+    const actionDeleteBtn = document.createElement('button');
+    actionDeleteBtn.textContent = 'Delete';
+
+    actionDeleteBtn.classList.add('event_delete-btn');
+    eventActionsTd.append(actionEditBtn, actionDeleteBtn);
     eventElem.append(eventNameTd, eventStartTd, eventEndTd, eventActionsTd);
   }
 
@@ -258,7 +263,6 @@ class EventController {
   setupEditRowEvent() {
     this.view.eventlist.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log(this.model.getEvent(e.target.getAttribute('edit-id')));
       this.view.editEvent(
         this.model.getEvent(e.target.getAttribute('edit-id'))
       );
