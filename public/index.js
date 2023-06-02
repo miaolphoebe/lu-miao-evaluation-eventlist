@@ -143,11 +143,10 @@ class EventView {
     eventStartTd.append(eventStartInput);
     eventEndTd.append(eventEndInput);
 
-    const actionDeleteBtn = document.createElement('button');
-    actionDeleteBtn.textContent = 'Delete';
-
-    actionDeleteBtn.classList.add('event_delete-btn');
-    eventActionsTd.append(actionSaveBtn, actionDeleteBtn);
+    const actionCancelBtn = document.createElement('button');
+    actionCancelBtn.textContent = 'Cancel';
+    actionCancelBtn.classList.add('event_cancel-btn');
+    eventActionsTd.append(actionSaveBtn, actionCancelBtn);
     eventElem.append(eventNameTd, eventStartTd, eventEndTd, eventActionsTd);
   }
 
@@ -224,6 +223,17 @@ class EventController {
     this.setUpEditEvent();
     this.setupEditRowEvent();
     this.setUpDeleteEvent();
+    this.setUpCancelBtn();
+  }
+
+  setUpCancelBtn() {
+    this.view.eventlist.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isCancelBtn = e.target.classList.contains('event_cancel-btn');
+      if (isCancelBtn) {
+        this.view.renderEvents(this.model.getEvents());
+      }
+    });
   }
 
   setUpAddEventRow() {
