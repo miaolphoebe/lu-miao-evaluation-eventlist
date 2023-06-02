@@ -134,10 +134,10 @@ class EventView {
     eventEndInput.setAttribute('id', 'end-date');
     eventEndInput.setAttribute('value', event.endDate);
 
-    const actionEditBtn = document.createElement('button');
-    actionEditBtn.classList.add('event_edit-finalize-btn');
-    actionEditBtn.setAttribute('edit-id', this.eventId);
-    actionEditBtn.textContent = 'Edit';
+    const actionSaveBtn = document.createElement('button');
+    actionSaveBtn.classList.add('event_save-btn');
+    actionSaveBtn.setAttribute('edit-id', event.id);
+    actionSaveBtn.textContent = 'Save';
 
     eventNameTd.append(eventNameInput);
     eventStartTd.append(eventStartInput);
@@ -147,7 +147,7 @@ class EventView {
     actionDeleteBtn.textContent = 'Delete';
 
     actionDeleteBtn.classList.add('event_delete-btn');
-    eventActionsTd.append(actionEditBtn, actionDeleteBtn);
+    eventActionsTd.append(actionSaveBtn, actionDeleteBtn);
     eventElem.append(eventNameTd, eventStartTd, eventEndTd, eventActionsTd);
   }
 
@@ -263,16 +263,19 @@ class EventController {
   setupEditRowEvent() {
     this.view.eventlist.addEventListener('click', (e) => {
       e.preventDefault();
-      this.view.editEvent(
-        this.model.getEvent(e.target.getAttribute('edit-id'))
-      );
+      const isAddBtn = e.target.classList.contains('event_edit-btn');
+      if (isAddBtn) {
+        this.view.editEvent(
+          this.model.getEvent(e.target.getAttribute('edit-id'))
+        );
+      }
     });
   }
 
   setUpEditEvent() {
     this.view.eventlist.addEventListener('click', (e) => {
-      const isEditBtn = e.target.classList.contains('event_edit-finalize-btn');
-      if (isEditBtn) {
+      const isSaveBtn = e.target.classList.contains('event_save-btn');
+      if (isSaveBtn) {
         const id = e.target.parentElement.parentElement.id;
 
         const eventName =
