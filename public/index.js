@@ -64,13 +64,17 @@ class EventModel {
   }
 
   async editEvent(event) {
-    return await API.updateEvent(event);
+    const updatedEvent = await API.updateEvent(event);
+    const index = this.#events.findIndex(
+      (event) => updatedEvent.id === event.id
+    );
+    this.#events[index] = updatedEvent;
   }
 
   async removeEvent(id) {
     try {
       const removedId = await API.deleteEvent(id);
-      this.#events = this.#events.filter((event) => event.id);
+      this.#events = this.#events.filter((event) => event.id !== removedId);
       return removedId;
     } catch (err) {
       console.log(err);
@@ -105,6 +109,29 @@ class EventView {
     const tbodyElem = document.querySelector('.tbody');
     const eventElem = this.createEventElem(event);
     tbodyElem.append(eventElem);
+  }
+
+  resetTable() {
+    this.eventlist.innerHTML = '';
+
+    const eventColumnHeader = document.createElement('thead');
+    eventColumnHeader.innerHTML = `
+    <tr>
+    <th>Event</th>
+    <th>Start</th>
+    <th>End</th>
+    <th>Actions</th>
+    </tr>`;
+
+    const tbody = document.createElement('tbody');
+    tbody.classList.add('tbody');
+
+    this.eventlist.append(eventColumnHeader, tbody);
+  }
+
+  createImgSvg(action) {
+    const altText = action.charAt(0).toUpperCase() + action.slice(1);
+    return `<img src='${action}.svg' width="20px" height="20px" alt="${altText}" />`;
   }
 
   editEvent(event) {
@@ -144,29 +171,6 @@ class EventView {
     actionCancelBtn.innerHTML = this.createImgSvg('cancel');
     eventActionsTd.append(actionSaveBtn, actionCancelBtn);
     eventElem.append(eventNameTd, eventStartTd, eventEndTd, eventActionsTd);
-  }
-
-  createImgSvg(action) {
-    const altText = action.charAt(0).toUpperCase() + action.slice(1);
-    return `<img src='${action}.svg' width="20px" height="20px" alt="${altText}" />`;
-  }
-
-  resetTable() {
-    this.eventlist.innerHTML = '';
-
-    const eventColumnHeader = document.createElement('thead');
-    eventColumnHeader.innerHTML = `
-    <tr>
-    <th>Event</th>
-    <th>Start</th>
-    <th>End</th>
-    <th>Actions</th>
-    </tr>`;
-
-    const tbody = document.createElement('tbody');
-    tbody.classList.add('tbody');
-
-    this.eventlist.append(eventColumnHeader, tbody);
   }
 
   createEventElem(event) {
