@@ -1,0 +1,67 @@
+:root {
+    --red: #c94c4c;
+    --blue: #008cba;
+    --tan: #e6e2d3;
+    --white: #f0f0f0;
+  }
+
+body {
+    text-align: center;
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0 1rem;
+    padding: 1rem;
+    border: 3px solid var(--tan);
+    border-radius: 10px;
+}
+
+.event {
+    background-color: var(--tan);
+}
+
+.event td { 
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    width: 9.375rem;
+    text-align: center;
+}
+
+button { 
+    border: none;
+    padding: 0.75rem;
+    border-radius: 3px;
+    color: var(--white);
+}
+
+.eventlist_add-btn,
+.event_add-btn,
+.event_edit-btn,
+.event_save-btn { 
+    background-color: var(--blue);
+}
+
+.eventlist_add-btn {
+    margin-bottom: 0.5rem;
+}
+
+.event_add-btn,
+.event_edit-btn,
+.event_save-btn {
+    margin-right: 0.5rem;
+}
+
+.event_delete-btn,
+.event_cancel-btn {
+    background-color: var(--red);
+}
+
+input { 
+    border: none;
+    padding: 0.5rem;
+    border-radius: 5px;
+}

@@ -98,10 +98,6 @@ class EventView {
     });
   }
 
-  getAddBtn() {
-    return document.querySelector('.event_add-btn');
-  }
-
   removeEvent(id) {
     const element = document.getElementById(`${id}`);
     element.remove();
@@ -163,24 +159,22 @@ class EventView {
     const actionAddBtn = document.createElement('button');
     actionAddBtn.classList.add('event_add-btn');
     actionAddBtn.textContent = 'Add';
+
     const actionDeleteBtn = document.createElement('button');
     actionDeleteBtn.textContent = 'Delete';
-
     actionDeleteBtn.classList.add('event_delete-btn');
-
-    const actionEditBtn = document.createElement('button');
-    actionEditBtn.classList.add('event_edit-btn');
-
-    actionEditBtn.textContent = 'Edit';
 
     if (event) {
       eventElem.setAttribute('id', event.id);
       eventNameTd.textContent = event.eventName;
       eventStartTd.textContent = event.startDate;
       eventEndTd.textContent = event.endDate;
-      eventActionsTd.append(actionEditBtn, actionDeleteBtn);
+      const actionEditBtn = document.createElement('button');
+      actionEditBtn.classList.add('event_edit-btn');
+      actionEditBtn.textContent = 'Edit';
       actionEditBtn.setAttribute('edit-id', event.id);
       actionDeleteBtn.setAttribute('remove-id', event.id);
+      eventActionsTd.append(actionEditBtn, actionDeleteBtn);
       eventElem.append(eventNameTd, eventStartTd, eventEndTd, eventActionsTd);
     } else {
       const eventInput = document.createElement('input');
@@ -192,11 +186,14 @@ class EventView {
       eventEndInput.setAttribute('type', 'date');
       eventEndInput.setAttribute('id', 'end-date');
 
-      actionDeleteBtn.setAttribute('remove-id', this.eventId);
+      const actionCancelBtn = document.createElement('button');
+      actionCancelBtn.textContent = 'Cancel';
+      actionCancelBtn.classList.add('event_cancel-btn');
+
       eventNameTd.append(eventInput);
       eventStartTd.append(eventStartInput);
       eventEndTd.append(eventEndInput);
-      eventActionsTd.append(actionAddBtn, actionDeleteBtn);
+      eventActionsTd.append(actionAddBtn, actionCancelBtn);
       eventElem.append(eventNameTd, eventStartTd, eventEndTd, eventActionsTd);
     }
 

@@ -1,12 +1,6 @@
 {
   "events": [
     {
-      "eventName": "xadaadadaaaaadaaaa",
-      "startDate": "2023-06-02",
-      "endDate": "2023-06-02",
-      "id": 16
-    },
-    {
       "eventName": "test",
       "startDate": "2023-06-02",
       "endDate": "2023-06-01",
