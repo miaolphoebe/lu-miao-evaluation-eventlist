@@ -41,10 +41,6 @@ const API = (function () {
   return { getEvent, getEvents, postEvent, updateEvent, deleteEvent };
 })();
 
-API.getEvents().then((data) => {
-  console.log(data);
-});
-
 class EventModel {
   #events = [];
   constructor() {}
@@ -54,7 +50,6 @@ class EventModel {
   }
 
   getEvent(eventId) {
-    console.log(this.#events.find((event) => event.id == eventId));
     return this.#events.find((event) => event.id == eventId);
   }
 
@@ -85,14 +80,13 @@ class EventModel {
 
 class EventView {
   constructor() {
-    this.addBtn = null;
-    this.eventlist = document.querySelector('.table tbody');
+    this.eventlist = document.querySelector('.table');
     this.eventlistAddBtn = document.querySelector('.eventlist_add-btn');
     this.eventId = 0;
   }
 
   renderEvents(events) {
-    this.eventlist.innerHTML = '';
+    this.resetTable();
     events.forEach((event) => {
       this.appendEvent(event);
     });
@@ -103,9 +97,14 @@ class EventView {
     element.remove();
   }
 
+  removeEventRow(node) {
+    node.remove();
+  }
+
   appendEvent(event) {
+    const tbodyElem = document.querySelector('.tbody');
     const eventElem = this.createEventElem(event);
-    this.eventlist.append(eventElem);
+    tbodyElem.append(eventElem);
   }
 
   editEvent(event) {
@@ -125,6 +124,7 @@ class EventView {
     eventStartInput.setAttribute('id', 'start-date');
     eventStartInput.setAttribute('type', 'date');
     eventStartInput.setAttribute('value', event.startDate);
+
     const eventEndInput = document.createElement('input');
     eventEndInput.setAttribute('type', 'date');
     eventEndInput.setAttribute('id', 'end-date');
@@ -133,17 +133,40 @@ class EventView {
     const actionSaveBtn = document.createElement('button');
     actionSaveBtn.classList.add('event_save-btn');
     actionSaveBtn.setAttribute('edit-id', event.id);
-    actionSaveBtn.textContent = 'Save';
+    actionSaveBtn.innerHTML = this.createImgSvg('save');
 
     eventNameTd.append(eventNameInput);
     eventStartTd.append(eventStartInput);
     eventEndTd.append(eventEndInput);
 
     const actionCancelBtn = document.createElement('button');
-    actionCancelBtn.textContent = 'Cancel';
     actionCancelBtn.classList.add('event_cancel-btn');
+    actionCancelBtn.innerHTML = this.createImgSvg('cancel');
     eventActionsTd.append(actionSaveBtn, actionCancelBtn);
     eventElem.append(eventNameTd, eventStartTd, eventEndTd, eventActionsTd);
+  }
+
+  createImgSvg(action) {
+    const altText = action.charAt(0).toUpperCase() + action.slice(1);
+    return `<img src='${action}.svg' width="16px" height="16px" alt="${altText}" />`;
+  }
+
+  resetTable() {
+    this.eventlist.innerHTML = '';
+
+    const eventColumnHeader = document.createElement('thead');
+    eventColumnHeader.innerHTML = `
+    <tr>
+    <th>Event</th>
+    <th>Start</th>
+    <th>End</th>
+    <th>Actions</th>
+    </tr>`;
+
+    const tbody = document.createElement('tbody');
+    tbody.classList.add('tbody');
+
+    this.eventlist.append(eventColumnHeader, tbody);
   }
 
   createEventElem(event) {
@@ -156,29 +179,28 @@ class EventView {
     const eventEndTd = document.createElement('td');
     const eventActionsTd = document.createElement('td');
 
-    const actionAddBtn = document.createElement('button');
-    actionAddBtn.classList.add('event_add-btn');
-    actionAddBtn.textContent = 'Add';
-
-    const actionDeleteBtn = document.createElement('button');
-    actionDeleteBtn.textContent = 'Delete';
-    actionDeleteBtn.classList.add('event_delete-btn');
-
     if (event) {
       eventElem.setAttribute('id', event.id);
       eventNameTd.textContent = event.eventName;
       eventStartTd.textContent = event.startDate;
       eventEndTd.textContent = event.endDate;
+
       const actionEditBtn = document.createElement('button');
       actionEditBtn.classList.add('event_edit-btn');
-      actionEditBtn.textContent = 'Edit';
       actionEditBtn.setAttribute('edit-id', event.id);
+      actionEditBtn.innerHTML = this.createImgSvg('edit');
+
+      const actionDeleteBtn = document.createElement('button');
+      actionDeleteBtn.classList.add('event_delete-btn');
       actionDeleteBtn.setAttribute('remove-id', event.id);
+      actionDeleteBtn.innerHTML = this.createImgSvg('delete');
+
       eventActionsTd.append(actionEditBtn, actionDeleteBtn);
       eventElem.append(eventNameTd, eventStartTd, eventEndTd, eventActionsTd);
     } else {
       const eventInput = document.createElement('input');
       eventInput.setAttribute('id', 'name-input');
+
       const eventStartInput = document.createElement('input');
       eventStartInput.setAttribute('id', 'start-date');
       eventStartInput.setAttribute('type', 'date');
@@ -186,9 +208,13 @@ class EventView {
       eventEndInput.setAttribute('type', 'date');
       eventEndInput.setAttribute('id', 'end-date');
 
+      const actionAddBtn = document.createElement('button');
+      actionAddBtn.classList.add('event_add-btn');
+      actionAddBtn.innerHTML = this.createImgSvg('add');
+
       const actionCancelBtn = document.createElement('button');
-      actionCancelBtn.textContent = 'Cancel';
       actionCancelBtn.classList.add('event_cancel-btn');
+      actionCancelBtn.innerHTML = this.createImgSvg('cancel');
 
       eventNameTd.append(eventInput);
       eventStartTd.append(eventStartInput);
@@ -228,7 +254,7 @@ class EventController {
       e.preventDefault();
       const isCancelBtn = e.target.classList.contains('event_cancel-btn');
       if (isCancelBtn) {
-        this.view.renderEvents(this.model.getEvents());
+        this.view.removeEventRow(event.target.parentElement.parentElement);
       }
     });
   }
