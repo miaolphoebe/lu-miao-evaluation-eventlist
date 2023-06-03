@@ -148,7 +148,7 @@ class EventView {
 
   createImgSvg(action) {
     const altText = action.charAt(0).toUpperCase() + action.slice(1);
-    return `<img src='${action}.svg' width="16px" height="16px" alt="${altText}" />`;
+    return `<img src='${action}.svg' width="20px" height="20px" alt="${altText}" />`;
   }
 
   resetTable() {
